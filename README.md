@@ -89,7 +89,7 @@ The config file lists your workspace directories and aliases. When you run tools
 <details>
 <summary><b>Auto-Approved Permissions (settings.json)</b></summary>
 
-To prevent Antigravity from prompting you for command confirmation every time, add the command prefix to the `allow` block under `command` permissions in your global settings file (`~/.gemini/antigravity/settings.json`):
+To prevent Antigravity from prompting you for command confirmation every time, add the command prefix to the `allow` block under `command` permissions in your global settings file (`~/.gemini/settings.json`):
 
 ```json
 {
