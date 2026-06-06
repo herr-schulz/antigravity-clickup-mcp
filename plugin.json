@@ -1,0 +1,15 @@
+{
+  "name": "clickup-mcp-plugin",
+  "version": "1.0.0",
+  "description": "Global ClickUp MCP connection plugin that allows querying tasks, creating tasks, and managing ClickUp spaces directly.",
+  "author": {
+    "name": "Antigravity ClickUp Integration"
+  },
+  "license": "MIT",
+  "keywords": [
+    "clickup",
+    "mcp",
+    "pm",
+    "backlog"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "example-project": {
+    "spaceId": "12345678",
+    "listId": "87654321",
+    "listName": "Tasks (Master)",
+    "spaceName": "Product Development",
+    "aliases": [
+      "example-project-site",
+      "example-project-core",
+      "example-project"
+    ]
+  }
+}
