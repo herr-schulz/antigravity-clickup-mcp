@@ -87,22 +87,23 @@ The config file lists your workspace directories and aliases. When you run tools
 </details>
 
 <details>
-<summary><b>Auto-Approved Permissions (settings.json)</b></summary>
+<summary><b>Auto-Approved Permissions (config.json)</b></summary>
 
-To prevent Antigravity from prompting you for command confirmation every time, add the command prefix to the `allow` block under `command` permissions in your global settings file (`~/.gemini/settings.json`):
+To prevent Antigravity from prompting you for command confirmation every time, add the command prefix to the `allow` list under `globalPermissionGrants` in your global configuration file (`~/.gemini/config/config.json`):
 
 ```json
 {
-  "permissions": {
-    "command": {
+  "userSettings": {
+    "globalPermissionGrants": {
       "allow": [
-        "node C:\\Users\\<YourUsername>\\.gemini\\config\\plugins\\clickup-mcp-plugin\\bin\\clickup-mcp.js",
-        "node /Users/<YourUsername>/.gemini/config/plugins/clickup-mcp-plugin/bin/clickup-mcp.js"
+        "command(node C:\\Users\\<YourUsername>\\.gemini\\config\\plugins\\clickup-mcp-plugin\\bin\\clickup-mcp.js)",
+        "command(node /Users/<YourUsername>/.gemini/config/plugins/clickup-mcp-plugin/bin/clickup-mcp.js)"
       ]
     }
   }
 }
 ```
+*(Replace `<YourUsername>` with your actual local username or use the absolute path to your home directory).*
 </details>
 
 ---
