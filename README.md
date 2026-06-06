@@ -20,7 +20,7 @@ This bridge runs a direct, lightweight Node client wrapper (`clickup-mcp.js`) to
 - **📂 Auto-Resolution:** Automatically maps your current workspace folder name to ClickUp list IDs using project config aliases.
 - **🔐 Interactive OAuth:** Automatically detects the ClickUp login URL and opens it in your default web browser.
 - **🗺️ Remote Space Sync:** Syncs and browses your ClickUp spaces, folders, and lists directly from the CLI.
-- **⚡ Zero Local Dependencies:** Built entirely using Node.js standard libraries for fast execution and zero security warnings.
+- **⚡ No Local `node_modules`:** Built entirely using Node.js standard libraries inside the plugin, requiring only the global `mcp-remote` package as an external dependency.
 
 ---
 
