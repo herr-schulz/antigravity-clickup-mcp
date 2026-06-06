@@ -196,7 +196,10 @@ async function handleAuth() {
 
     const matches = text.match(urlRegex);
     if (matches && !detectedUrl) {
-      const loginUrl = matches.find(url => url.includes('clickup.com') || url.includes('oauth'));
+      const loginUrl = matches.find(url => 
+        (url.includes('clickup.com') || url.includes('oauth')) && 
+        (url.includes('?') || url.includes('/oauth/') || url.includes('/login') || url.includes('/authorize'))
+      );
       if (loginUrl) {
         detectedUrl = loginUrl;
         clearTimeout(timeout);
