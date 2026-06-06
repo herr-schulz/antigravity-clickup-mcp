@@ -1,95 +1,95 @@
-# Antigravity ClickUp MCP Bridge
+# ClickUp MCP Bridge for Antigravity
 
-A robust, platform-independent Model Context Protocol (MCP) bridge for Google Antigravity IDE (Gemini Code Assist), designed to integrate ClickUp workspaces, tasks, and project management natively into your agentic workflow.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP](https://img.shields.io/badge/MCP-Supported-blue.svg)](https://modelcontextprotocol.io)
 
----
-
-## The Problem & The Solution
-
-### The Windows Process Spawning Issue
-Standard MCP clients and agent IDEs on Windows frequently fail to load command-based MCP servers (e.g. running `npx mcp-remote` or executing `.cmd`/`.ps1` wrapper files) because process managers spawn child processes directly without a shell wrapper (`shell: true` disabled for security/portability). Under Windows, this leads to `ENOENT` or execution blockages, resulting in "Failed to load MCP servers" errors.
-
-### The Solution
-This plugin acts as a standalone client wrapper (`clickup-mcp.js`). Since Windows can natively spawn binary files (`node.exe`) directly, the script starts Node and programmatically passes it the absolute JavaScript path of the installed global `mcp-remote` proxy. It handles JSON-RPC communication over standard I/O (stdio) and delegates session management to `mcp-remote` (using OAuth tokens stored in `~/.mcp-auth`), completely bypassing OS-level shell restrictions.
+A robust, platform-independent Model Context Protocol (MCP) bridge connecting **Google Antigravity IDE (Gemini Code Assist)** with **ClickUp** on Windows, macOS, and Linux.
 
 ---
 
-## Key Features
+## 🚀 Why This Exists
 
-1. **Dynamic Path Resolution:** Automatically detects global npm packages and resolves the `mcp-remote/dist/proxy.js` location across Windows, macOS, and Linux, with automatic fallbacks for custom prefix setups (e.g., nvm, fnm).
-2. **Interactive OAuth Launcher (`auth`):** Spawns the connection, intercepts the OAuth authorization URL, automatically opens the default browser, and prompts the user to press Enter upon completion.
-3. **Hierarchy Workspace Sync (`projects remote`):** Connects to ClickUp and fetches all Spaces, Folders, and Lists in a beautifully formatted tree representation.
-4. **Auto-Mapping Configuration (`projects add`):** Automatically searches ClickUp spaces for a target list, retrieves list and space IDs, and writes them with aliases directly to your local mappings config.
-5. **Workspace Directory Resolution:** If no project argument is specified, the script automatically parses your current working directory name, matching it against aliases inside `clickup-projects.json` to resolve the target list ID.
+Windows process managers often fail to spawn command-based MCP servers (like `.cmd` or `.ps1` scripts) directly without a shell. 
+
+This bridge runs a direct, lightweight Node client wrapper (`clickup-mcp.js`) to invoke the global `mcp-remote` proxy natively using `node.exe`, completely bypassing Windows process spawning restrictions.
 
 ---
 
-## Installation & Setup Guide
+## ✨ Features
 
-There are two ways to install and configure this plugin: the **Recommended Agent-Led Setup** (where the AI agent configures everything automatically via chat), or the **Manual CLI Setup**.
+- **📂 Auto-Resolution:** Automatically maps your current workspace folder name to ClickUp list IDs using project config aliases.
+- **🔐 Interactive OAuth:** Automatically detects the ClickUp login URL and opens it in your default web browser.
+- **🗺️ Remote Space Sync:** Syncs and browses your ClickUp spaces, folders, and lists directly from the CLI.
+- **⚡ Zero Local Dependencies:** Built entirely using Node.js standard libraries for fast execution and zero security warnings.
 
 ---
 
-### Method A: Recommended Agent-Led Setup (No Terminal Usage Required)
+## 📦 Installation & Setup
+
+### Method A: Agent-Led (Recommended)
 
 1. **Copy the Plugin Folder:**
    Copy this repository folder into your global Antigravity plugins directory:
-   - **Windows:** `C:\Users\<YourUsername>\.gemini\config\plugins\clickup-mcp-plugin`
+   - **Windows:** `C:\Users\<Name>\.gemini\config\plugins\clickup-mcp-plugin`
    - **macOS / Linux:** `~/.gemini/config/plugins/clickup-mcp-plugin`
 
 2. **Trigger Setup in Chat:**
-   Open your Antigravity IDE and simply type:
+   Open your Antigravity IDE and type:
    > *"Set up ClickUp for me"*
-
-3. **Follow the Agent's Prompts:**
-   The agent will read the built-in `clickup-setup` skill and autonomously execute the following:
-   - Verify and install the global `mcp-remote` dependency.
-   - Start the OAuth connection and open your browser for login.
-   - Query remote spaces and map your current project directories automatically.
+3. The agent will automatically check prerequisites, run the OAuth login, and map your workspace folders.
 
 ---
 
 ### Method B: Manual CLI Setup
 
-If you prefer to run the configuration steps yourself in the terminal:
-
 1. **Install Prerequisites:**
-   Install the `mcp-remote` package globally on your machine:
    ```bash
    npm install -g mcp-remote
    ```
-
-2. **Copy the Plugin:**
-   Copy this repository folder into the global Antigravity plugins directory:
-   - **Windows:** `C:\Users\<YourUsername>\.gemini\config\plugins\clickup-mcp-plugin`
-   - **macOS / Linux:** `~/.gemini/config/plugins/clickup-mcp-plugin`
-
+2. **Copy the Plugin Folder** to your global Antigravity plugins directory.
 3. **Authenticate:**
-   Run the CLI auth helper:
    ```bash
    node bin/clickup-mcp.js auth
    ```
-   *Note: This will launch your browser. Authorize the application, return to the terminal, and press **ENTER**.*
-
-4. **Sync & Map Your Projects:**
-   List all ClickUp lists on your account:
+   *Note: This will launch your default web browser. Log in, authorize, then return to your terminal and press **ENTER**.*
+4. **Sync & Map Projects:**
    ```bash
+   # List remote ClickUp Spaces & Lists
    node bin/clickup-mcp.js projects remote
-   ```
-   Map a local folder name (e.g. `my-project-site`) to a ClickUp List name or ID (e.g. `Backlog`):
-   ```bash
-   node bin/clickup-mcp.js projects add my-project-site "Backlog"
+
+   # Map a local folder to a ClickUp List
+   node bin/clickup-mcp.js projects add my-project "Backlog"
    ```
 
 ---
 
-### Whitelisting Command Execution (Optional & Recommended)
+## 🛠️ Developer Reference
 
-To prevent Antigravity from constantly asking for permission when executing ClickUp commands, you can whitelist the specific wrapper script prefix in your global settings file (`~/.gemini/antigravity-cli/settings.json` or `~/.gemini/antigravity/settings.json`). 
+<details>
+<summary><b>Project Mappings Format (clickup-projects.json)</b></summary>
 
-This secures your system by auto-approving **only** our plugin script, while keeping general `node` execution commands under "ask" or "deny" restrictions.
+The config file lists your workspace directories and aliases. When you run tools in a mapped folder, the target list ID is resolved automatically.
 
-Add the following prefix rule to the `allow` block under `command` permissions:
+```json
+{
+  "example-project": {
+    "spaceId": "12345678",
+    "listId": "87654321",
+    "listName": "Tasks (Master)",
+    "spaceName": "Product Development",
+    "aliases": [
+      "example-project-site",
+      "example-project"
+    ]
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>Auto-Approved Permissions (settings.json)</b></summary>
+
+To prevent Antigravity from prompting you for command confirmation every time, add the command prefix to the `allow` block under `command` permissions in your global settings file (`~/.gemini/antigravity/settings.json`):
 
 ```json
 {
@@ -103,60 +103,10 @@ Add the following prefix rule to the `allow` block under `command` permissions:
   }
 }
 ```
-*(Replace `<YourUsername>` with your actual local username or use the absolute path to your home directory).*
+</details>
 
 ---
 
-## Project Mappings Format (`config/clickup-projects.json`)
-
-The config file lists your workspace directories and aliases. When you run tools in a mapped folder, the target list ID is resolved automatically.
-
-```json
-{
-  "example-project": {
-    "spaceId": "12345678",
-    "listId": "87654321",
-    "listName": "Tasks (Master)",
-    "spaceName": "Product Development",
-    "aliases": [
-      "example-project-site",
-      "example-project-core",
-      "example-project"
-    ]
-  }
-}
-```
-
----
-
-## Usage for Agents & Developers
-
-The client supports direct execution of ClickUp MCP tools. 
-
-### CLI Syntax
-```bash
-node bin/clickup-mcp.js <toolName> '[jsonArgsString]'
-```
-
-### Example Calls
-
-- **List local project mappings:**
-  ```bash
-  node bin/clickup-mcp.js projects list
-  ```
-- **Filter/List tasks in a project:**
-  ```bash
-  node bin/clickup-mcp.js clickup_filter_tasks '{"project":"example-project"}'
-  ```
-- **Filter tasks (Workspace Auto-Resolution):**
-  If executed inside the directory `/projects/example-project-site`:
-  ```bash
-  node bin/clickup-mcp.js clickup_filter_tasks
-  ```
-  *The script will automatically detect the folder name, match the alias, and fetch tasks for List ID `87654321`.*
-
----
-
-## License
+## ⚖️ License
 
 This project is licensed under the MIT License.
